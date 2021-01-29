@@ -4,6 +4,7 @@ import cn.sciuridae.bean.City;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
@@ -23,4 +24,8 @@ public interface CityMapper extends BaseMapper<City> {
 
     @Update("update `city` set `city_count` = `city_count`+1 WHERE `id` = #{id}")
     boolean addStudent(@Param("id") int id);
+
+    @Select("select id from city where city_name = #{name}")
+    Integer getCityid(@Param("name")String name);
+
 }

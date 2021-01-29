@@ -1,5 +1,9 @@
 package cn.sciuridae.bean.show;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class studentShow {
     private static final long serialVersionUID = 1L;
 
@@ -65,8 +69,13 @@ public class studentShow {
         return student_bir;
     }
 
-    public void setStudent_bir(String student_bir) {
-        this.student_bir = student_bir;
+    public void setStudent_bir(LocalDateTime student_bir) {
+        if(student_bir!=null){
+            DateTimeFormatter dTF = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            this.student_bir = student_bir.format(dTF);
+        }else {
+            this.student_bir = null;
+        }
     }
 
     public String getStudent_class() {

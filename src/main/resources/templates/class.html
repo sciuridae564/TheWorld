@@ -9,7 +9,7 @@
 </head>
 <body>
 <table id="demo"></table>
-
+<button style="height: 50px ;width: 150px" type="button" onclick="f()"></button>
 
 <script type="text/javascript">
     layui.use('table', function () {
@@ -19,20 +19,39 @@
         table.render({
             elem: '#demo'
             , height: 312
-            , url: '/city/findAlldata' //数据接口
+            , url: '/class/findAlldata' //数据接口
             , page: true //开启分页
             , cols: [
                 [ //表头
-                    {field: 'id', title: 'ID', width: 80, sort: true, fixed: 'left'}
-                    , {field: 'city_name', title: '用户名', width: 80}
-                    , {field: 'city_time', title: '性别', width: 80, sort: true}
-                    , {field: 'city_count', title: '城市', width: 80}
+                     {field: 'class_id', title: '教室代码', width: 80}
+                    , {field: 'class_name', title: '教室名称', width: 230, sort: true}
                 ]
             ]
         });
 
     });
 
+
+    function f() {
+        $.post({ url: "/class/save?" +
+                "classname="+GetRandomNum(0,558885)+
+                "&classid="+GetRandomNum(0,999999) ,
+            context: JSON,
+            success: function(json){
+                console.log(json)
+            },
+            error :function () {
+                console.log(json)
+            }});
+
+    }
+
+
+    function GetRandomNum(Min, Max) {
+        var Range = Max - Min;
+        var Rand = Math.random();
+        return(Min + Math.round(Rand * Range));
+    }
 </script>
 </body>
 </html>

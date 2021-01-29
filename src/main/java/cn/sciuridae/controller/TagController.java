@@ -1,7 +1,17 @@
 package cn.sciuridae.controller;
 
 import cn.sciuridae.bean.Tags;
+import cn.sciuridae.bean.searchType;
+import cn.sciuridae.bean.show.studentShow;
+import cn.sciuridae.bean.show.tagsShow;
 import cn.sciuridae.service.TagsService;
+import cn.sciuridae.utils.JsonUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,28 +24,35 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
-@RequestMapping("tag")
+@RequestMapping("tags")
 public class TagController {
 
     @Autowired
     private TagsService tagsService;
 
     //定义用来接受查询所有的请求
-    @GetMapping("findAll")
-    public String findAll(Model model) {
-        //1.调用业务层查询所有的标签
-        List<Tags> tags = tagsService.list();
-        return "back/tag/index";
-
-    }
-
-    //定义用来接受查询所有的请求
-    @PostMapping("findAll")
+    @RequestMapping("findAlldata")
     @ResponseBody
-    public List<Tags> findAll() {
-        //1.调用业务层查询所有的标签
-        List<Tags> tags = tagsService.list();
-        return tags;
+    public String findAll(int page, int limit) {
+        Page<tagsShow> Paging;
+        Paging = tagsService.findByPaging(page, limit );
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode root = mapper.createObjectNode();
+        root.put("count", Paging.getTotal());
+        root.put("page", Paging.getPages());
+        try {
+            List<tagsShow> result = Paging.getResult();
+            String s  =mapper.writeValueAsString(result);
+            JsonNode jsonNode = mapper.readTree(s);
+            root.set("data", jsonNode);
+            root.put("code", 0);
+            root.put("msg", "");
+        } catch (JsonProcessingException e) {
+            root.put("code", 1);
+            root.put("msg", "json解析错误");
+            e.printStackTrace();
+        }
+        return root.toString();
 
     }
 
@@ -50,6 +67,7 @@ public class TagController {
         try {
             tagsService.save(tags);
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
         return true;

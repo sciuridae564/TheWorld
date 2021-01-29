@@ -19,8 +19,9 @@ public interface StudentService extends IService<Student> {
     boolean deleStudent(Long studentId);
 
     int addStudent(Student student);
+    Student addStudent(studentShow student);
 
-    boolean changeStudentCity(studentShow student);
+    studentShow changeStudent(studentShow student);
 
     Page<studentShow> findByPaging(int current, int limit);
 

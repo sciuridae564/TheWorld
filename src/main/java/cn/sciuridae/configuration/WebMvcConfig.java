@@ -27,6 +27,7 @@ public class WebMvcConfig
         registry.addViewController("/tags").setViewName("/tags");
         registry.addViewController("/team").setViewName("/team");
         registry.addViewController("/test").setViewName("/test");
+        registry.addViewController("/login").setViewName("/login");
     }
 
     @Override

@@ -9,10 +9,26 @@
 </head>
 <body>
 
-<table id="demo"></table>
-<button style="height: 50px ;width: 150px" type="button" onclick="f()"></button>
+<form action="/user/login" type="post">
 
-<script type="text/javascript">
+    <input type="text" name="username" id="name" placeholder="请输入用户名...">
+    <input type="text" name="password"  id="password" placeholder="请输入密码...">
+    <input type="text" name="code"
+           id="code" placeholder="请输入验证码....">
+
+    <img src="/user/getImage" id="image"
+         style="height:48px;float: right;" alt="">
+    <button class="layui-btn layui-btn-sm" type="submit">登陆</button>
+
+</form>
+
+<table id="demo"></table>
+
+<button class="layui-btn layui-btn-sm" type="button" onclick="f()">添加</button>
+
+
+<script>
+
     layui.use('table', function () {
         var table = layui.table;
 
@@ -20,23 +36,25 @@
         table.render({
             elem: '#demo'
             , height: 312
-            , url: '/tags/findAlldata' //数据接口
+            , url: '/user/list' //数据接口
             , page: true //开启分页
             , cols: [
                 [ //表头
-                     {field: 'tags_name', title: '标签名', width: 80, sort: true}
-                    , {field: 'tags_type', title: '标签种类', width: 80}
-                    , {field: 'tags_createtime', title: '标签创建时间', width: 80}
+                    {field: 'account_name', title: '用户名',   sort: true, fixed: 'left'}
+                    , {field: 'regtime', title: '注册时间',  }
+                    , {field: 'role', title: '角色'   }
                 ]
             ]
         });
 
     });
 
+
     function f() {
-        $.post({ url: "/tags/save?" +
-                "Tags_name="+GetRandomNum(0,558885)+
-                "&Tags_type= true" ,
+        $.post({ url: "/user/list?" +
+                "username="+GetRandomNum(0,558885)+
+                "&password= 111"+
+                "&role= 0",
             context: JSON,
             success: function(json){
                 console.log(json)
@@ -53,6 +71,7 @@
         var Rand = Math.random();
         return(Min + Math.round(Rand * Range));
     }
+
 </script>
 </body>
 </html>

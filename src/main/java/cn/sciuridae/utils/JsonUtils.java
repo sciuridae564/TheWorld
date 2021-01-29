@@ -26,7 +26,7 @@ public final class JsonUtils {
             mapper.registerModule(timeModule);
             return mapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
-
+            e.printStackTrace();
         }
         return null;
     }

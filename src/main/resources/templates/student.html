@@ -8,34 +8,114 @@
     <script src="/layui/layui.js"></script>
 </head>
 <body>
-<table id="demo"></table>
+<table class="layui-hide" id="test" lay-filter="test"></table>
 
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">提交</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
 
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="addData">获取选中行数据</button>
+    </div>
+</script>
 <script type="text/javascript">
+
     layui.use('table', function () {
         var table = layui.table;
 
         table.render({
-            elem: '#demo'
+            elem: '#test'
             , height: 400
             , url: '/student/findAll' //数据接口
             , page: true //开启分页
+            ,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
             , cols: [
                 [ //表头
                     {field: 'student_id', title: '用户名', sort: true, fixed: 'left'}
-                    , {field: 'student_name', title: '名字'}
-                    , {field: 'student_sex', title: '性别', width: 80}
-                    , {field: 'student_bir', title: '生日'}
-                    , {field: 'student_class', title: '班级'}
-                    , {field: 'student_team', title: '小组'}
-                    , {field: 'qq_number', title: 'qq号'}
-                    , {field: 'work_city', title: '城市'}
+                    , {field: 'student_name', title: '名字' ,edit: 'text'}
+                    , {field: 'student_sex', title: '性别', width: 80,edit: 'text'}
+                    , {field: 'student_bir', title: '生日',edit: 'date' }
+                    , {field: 'student_class', title: '班级',edit: 'text'}
+                    , {field: 'student_team', title: '小组',edit: 'text'}
+                    , {field: 'qq_number', title: 'qq号',edit: 'number'}
+                    , {field: 'work_city', title: '城市',edit: 'text'}
+                    ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
                 ]
             ]
         });
 
+        //头工具栏事件
+        table.on('toolbar(test)', function(obj){
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch(obj.event){
+                case 'addData':
+                    $.post({ url: "/student/save?" +
+                            "student_id="+Math.random(0,999999999)+
+                            "&student_name=studentName"+GetRandomNum(0,55)+
+                            "&student_sex=" + "女"+
+                            "&student_bir="+ "2012-01-02"+
+                            "&student_class="+"理科教室"+
+                            "&work_city="+"白玉楼"+
+                            "&qq_number="+"11544855412"+
+                            "&student_team="+"大姐姐",
+                        context: JSON,
+                        success: function(json){
+                            console.log(json)
+                        },
+                        error :function () {
+                            console.log(json)
+                        }});
+
+                    break;
+            };
+        });
+
+        //监听行工具事件
+        table.on('tool(test)', function(obj){
+            var data = obj.data;
+            //console.log(obj)
+            if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    $.ajax({ url: "/student/dele?student_ID="+data.student_id,
+                        context: JSON,
+                        success: function(){
+                            obj.del();
+                        }});
+                    layer.close(index);
+                });
+            } else if(obj.event === 'edit'){
+                layer.confirm('提交更新', function(index){
+                    $.ajax({ url: "/student/change?student_ID="+data.student_id+
+                            "&student_name="+data.student_name+
+                        "&student_sex=" + data.student_sex+
+                        "&student_bir="+ data.student_bir+
+                        "&student_class="+data.student_class+
+                        "&work_city="+data.work_city+
+                        "&qq_number="+data.qq_number+
+                        "&student_team="+data.student_team,
+                        context: JSON,
+                        success: function(json){
+                            console.log(json)
+                        },
+                        error :function () {
+                            console.log(json)
+                        }});
+
+                    layer.close(index);
+                });
+            }
+        });
     });
 
+
+
+    function GetRandomNum(Min, Max) {
+        var Range = Max - Min;
+        var Rand = Math.random();
+        return(Min + Math.round(Rand * Range));
+    }
 </script>
 </body>
 </html>

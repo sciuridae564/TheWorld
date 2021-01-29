@@ -1,8 +1,12 @@
 package cn.sciuridae.dao;
 
 import cn.sciuridae.bean.Class;
+import cn.sciuridae.bean.show.tagsShow;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -17,4 +21,9 @@ import org.springframework.stereotype.Repository;
 @Mapper
 public interface ClassMapper extends BaseMapper<Class> {
 
+    @Select("select id from class where class_name = #{name}")
+    Integer getClassid(@Param("name")String name);
+    @Select({"SELECT class_id ,class_name " +
+            "FROM class"})
+    Page<Class> getclass();
 }

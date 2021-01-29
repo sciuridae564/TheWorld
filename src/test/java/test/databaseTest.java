@@ -2,6 +2,7 @@ package test;
 
 import cn.sciuridae.MySpringApplication;
 import cn.sciuridae.bean.show.studentShow;
+import cn.sciuridae.dao.ClassMapper;
 import cn.sciuridae.service.StudentService;
 import cn.sciuridae.service.TagsService;
 import cn.sciuridae.service.TeamService;
@@ -23,6 +24,9 @@ public class databaseTest {
     @Autowired
     StudentService studentService;
 
+    @Autowired
+    ClassMapper classMapper;
+
 
     @Test
     public void test() {
@@ -42,8 +46,7 @@ public class databaseTest {
 //        student.setStudent_name("test");
 //        student.setStudent_id(1122554454L);
 
-        Page<studentShow> byPaging = studentService.findByPaging(1, 2);
-        System.out.println(byPaging.getResult().get(0));
-        System.out.println(byPaging.getResult().get(1));
+        int aaa = classMapper.getClassid("aaa");
+        System.out.println(aaa);
     }
 }

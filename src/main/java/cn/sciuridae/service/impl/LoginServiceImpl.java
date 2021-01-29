@@ -2,9 +2,13 @@ package cn.sciuridae.service.impl;
 
 import cn.sciuridae.bean.Login;
 import cn.sciuridae.bean.Result;
+import cn.sciuridae.bean.show.loginShow;
+import cn.sciuridae.bean.show.studentShow;
 import cn.sciuridae.dao.LoginMapper;
 import cn.sciuridae.service.LoginService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -46,19 +50,28 @@ public class LoginServiceImpl extends ServiceImpl<LoginMapper, Login> implements
     }
 
     @Override
-    public Result login(String username, String password) {
+    public int login(String username, String password) {
         BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
-        Result result = new Result();
         Login user = loginMapper.getUser(username);
         if (user != null) {
             boolean matches = bc.matches(password, user.getAccount_password());
-            result.setStatus(matches);
-            result.setMessage(matches ? "登陆成功" : "密码错误");
-            result.setObject(matches ? null : user);
-            return result;
+
+            if(matches){
+                if(user.getRole()){
+                    return 2;//管理员
+                }else {
+                    return 1;
+                }
+            }else {
+                return 0;
+            }
+
         }
-        result.setStatus(false);
-        result.setMessage("无此用户");
-        return result;
+        return 0;
+    }
+
+    public Page<loginShow> findByPaging(int current, int limit){
+        PageHelper.startPage(current, limit);
+        return loginMapper.getlogins();
     }
 }

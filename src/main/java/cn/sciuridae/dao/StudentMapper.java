@@ -37,7 +37,23 @@ public interface StudentMapper extends BaseMapper<Student> {
             "FROM student st  \n" +
             "LEFT  JOIN class cl ON st.student_class_id=cl.`id` \n" +
             "LEFT  JOIN team t ON t.`id`=st.`student_team_id` \n" +
-            "LEFT  JOIN city c ON c.`id`=st.`work_city`")
+            "LEFT  JOIN city c ON c.`id`=st.`work_city` \n" +
+            "WHERE st.`student_id` = #{student_id}")
+    studentShow getStudentShowIdone(@Param("student_id") Long studentid);
+
+    @Select("SELECT " +
+            "st.student_id as student_id," +
+            "st.student_name as student_name," +
+            "IF(st.`student_sex`=1,\"男\",\"女\") AS student_sex," +
+            "st.`student_bir` as student_bir, " +
+            "cl.`class_name` as student_class , " +
+            "t.`team_name` as student_team," +
+            "st.`qq_number` ," +
+            "c.`city_name` as work_city\n" +
+            "FROM student st  \n" +
+            "LEFT  JOIN class cl ON st.student_class_id=cl.`id` \n" +
+            "LEFT  JOIN team t ON t.`id`=st.`student_team_id` \n" +
+            "LEFT  JOIN city c ON c.`id`=st.`work_city` ")
     Page<studentShow> getStudentShow();
 
     @Select("SELECT " +
@@ -57,7 +73,7 @@ public interface StudentMapper extends BaseMapper<Student> {
     Page<studentShow> getStudentShowCity(@Param("city") String city);
 
 
-    @Select("SELECT" +
+    @Select("SELECT " +
             "st.student_id as student_id," +
             "st.student_name as student_name," +
             "IF(st.`student_sex`=1,\"男\",\"女\") AS student_sex," +
@@ -69,7 +85,7 @@ public interface StudentMapper extends BaseMapper<Student> {
             "FROM student st  \n" +
             "LEFT  JOIN class cl ON st.student_class_id=cl.`id` \n" +
             "LEFT  JOIN team t ON t.`id`=st.`student_team_id` \n" +
-            "LEFT  JOIN city c ON c.`id`=st.`work_city`" +
+            "LEFT  JOIN city c ON c.`id`=st.`work_city` " +
             "WHERE st.`student_id` like #{student_id}")
     Page<studentShow> getStudentShowId(@Param("student_id") String studentid);
 
@@ -85,11 +101,11 @@ public interface StudentMapper extends BaseMapper<Student> {
             "FROM student st  \n" +
             "LEFT  JOIN class cl ON st.student_class_id=cl.`id` \n" +
             "LEFT  JOIN team t ON t.`id`=st.`student_team_id` \n" +
-            "LEFT  JOIN city c ON c.`id`=st.`work_city`" +
+            "LEFT  JOIN city c ON c.`id`=st.`work_city` " +
             "WHERE st.`qq_number` like #{qq}")
     Page<studentShow> getStudentShowqq(@Param("qq") String qq);
 
-    @Select("SELECT" +
+    @Select("SELECT " +
             "st.student_id as student_id," +
             "st.student_name as student_name," +
             "IF(st.`student_sex`=1,\"男\",\"女\") AS student_sex," +
@@ -101,7 +117,7 @@ public interface StudentMapper extends BaseMapper<Student> {
             "FROM student st  \n" +
             "LEFT  JOIN class cl ON st.student_class_id=cl.`id` \n" +
             "LEFT  JOIN team t ON t.`id`=st.`student_team_id` \n" +
-            "LEFT  JOIN city c ON c.`id`=st.`work_city`" +
+            "LEFT  JOIN city c ON c.`id`=st.`work_city` " +
             "WHERE st.`student_name` like #{name}")
     Page<studentShow> getStudentShowName(@Param("name") String name);
 
