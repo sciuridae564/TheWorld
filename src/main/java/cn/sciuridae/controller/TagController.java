@@ -1,21 +1,15 @@
 package cn.sciuridae.controller;
 
 import cn.sciuridae.bean.Tags;
-import cn.sciuridae.bean.searchType;
-import cn.sciuridae.bean.show.studentShow;
 import cn.sciuridae.bean.show.tagsShow;
 import cn.sciuridae.service.TagsService;
-import cn.sciuridae.utils.JsonUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,12 +24,19 @@ public class TagController {
     @Autowired
     private TagsService tagsService;
 
-    //定义用来接受查询所有的请求
+    /**
+     * 分页查找所有标签数据
+     *
+     * @param page  页码 可为0 为0则返回全部数据
+     * @param limit 页面容量
+     * @return {code:0 ,msg:错误原因 ,data:Object}
+     * 0为成功查找 data有值 发生错误时msg有值 ，
+     */
     @RequestMapping("findAlldata")
     @ResponseBody
     public String findAll(int page, int limit) {
         Page<tagsShow> Paging;
-        Paging = tagsService.findByPaging(page, limit );
+        Paging = tagsService.findByPaging(page, limit);
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode root = mapper.createObjectNode();
         root.put("count", Paging.getTotal());
@@ -56,7 +57,13 @@ public class TagController {
 
     }
 
-    //定义一个用来接受添加标签的请求
+    /**
+     * 保存一个标签数据
+     *
+     * @param Tags_name 标签名
+     * @param Tags_type 标签种类 0为学校标签 1为个人标签
+     * @return 插入成功与否
+     */
     @PostMapping("save")
     @ResponseBody
     public boolean save(String Tags_name, boolean Tags_type) {
@@ -73,15 +80,4 @@ public class TagController {
         return true;
     }
 
-    /**
-     * 0班级1学生
-     *
-     * @param type
-     * @return
-     */
-    @GetMapping("findByType")
-    @ResponseBody
-    public List<Tags> findByType(boolean type) {
-        return tagsService.getTags(type);
-    }
 }

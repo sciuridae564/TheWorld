@@ -1,21 +1,18 @@
 package cn.sciuridae.controller;
 
 
-import cn.sciuridae.bean.Team;
 import cn.sciuridae.bean.show.teamShow;
 import cn.sciuridae.service.TeamService;
 import cn.sciuridae.utils.JsonUtils;
-import com.github.pagehelper.Page;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.github.pagehelper.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.List;
 
 /**
  * <p>
@@ -32,6 +29,14 @@ public class TeamController {
     @Autowired
     TeamService teamService;
 
+    /**
+     * 查找小队数据
+     *
+     * @param page  页码
+     * @param limit 页面容量
+     * @return json {code:0,msg:错误原因,data:object}
+     * code为0为成功，data携带查询到的数据 其他则为不成功 msg携带错误原因
+     */
     @RequestMapping("findAlldata")
     @ResponseBody
     public String getTeams(Integer page, Integer limit) {
@@ -55,6 +60,13 @@ public class TeamController {
         return root.toString();
     }
 
+    /**
+     * 删除小队数据
+     *
+     * @param teamid 小队的队伍编号
+     * @return json {code：0，msg：“”}
+     * code为0则为成功 msg为不成功信息
+     */
     @RequestMapping("dele")
     @ResponseBody
     public String deleTeam(Long teamid) {
@@ -74,14 +86,15 @@ public class TeamController {
     }
 
     /**
-     *
-     * @param teamid
-     * @param team_name
-     * @param team_class_id
-     * @param team_nick
-     * @param team_slo
-     * @param team_leader_id
-     * @return
+     *  保存一个小队数据
+     * @param teamid 小队队伍编号
+     * @param team_name 小队队名
+     * @param team_class_id 小队所属的班级编号
+     * @param team_nick  小队昵称
+     * @param team_slo 小队的标语
+     * @param team_leader_id 小队的队长学号
+     * @return {code：0，msg}
+     *          0为成功 ，msg为错误原因
      */
     @RequestMapping("save")
     @ResponseBody
@@ -106,9 +119,9 @@ public class TeamController {
         root.put("code", add);
         if (add == -1) {
             root.put("msg", "数据不存在");
-        } else if(add==-2){
+        } else if (add == -2) {
             root.put("msg", "组长和班级不存在");
-        }else if (add==0){
+        } else if (add == 0) {
             root.put("msg", "插入成功");
         }
 
@@ -116,6 +129,17 @@ public class TeamController {
         return root.toString();
     }
 
+    /**
+     * 更改一个小队数据
+     *
+     * @param teamid         小队编码 必须在数据库中已有值
+     * @param team_name      小队队名 可为空
+     * @param team_class_id  小队所属的班级编号 可为空
+     * @param team_nick      小队昵称 可为空
+     * @param team_slo       小队标语 可为空
+     * @param team_leader_id 小队队长学号 可为空
+     * @return {code：0.msg：“”}
+     */
     @RequestMapping("change")
     @ResponseBody
     public String changeTeam(Long teamid, String team_name,

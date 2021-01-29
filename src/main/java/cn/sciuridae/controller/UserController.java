@@ -1,12 +1,8 @@
 package cn.sciuridae.controller;
 
-import cn.sciuridae.aop.Enum.PermEnum;
-import cn.sciuridae.aop.anno.check;
 import cn.sciuridae.bean.Login;
 import cn.sciuridae.bean.Result;
-import cn.sciuridae.bean.searchType;
 import cn.sciuridae.bean.show.loginShow;
-import cn.sciuridae.bean.show.studentShow;
 import cn.sciuridae.service.LoginService;
 import cn.sciuridae.utils.JsonUtils;
 import cn.sciuridae.utils.ValidateImageCodeUtils;
@@ -26,7 +22,6 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
-import java.lang.management.OperatingSystemMXBean;
 
 //该控制器层用来接受用户模块相关的请求
 @Controller
@@ -51,59 +46,81 @@ public class UserController {
     }
 
 
-    //定义一个用来接受注册请求的方法
+    /**
+     * 注册一个账户
+     *
+     * @param code     验证码
+     * @param username 账户用户名
+     * @param password 账户密码
+     * @param role     账户角色 0为学生1为管理员
+     * @param session
+     * @return 注册
+     */
     @PostMapping("regist")
     @ResponseBody
     public Result regist(String code, String username, String password, int role, HttpSession session) {
         Result result;
 
-//        String code1 = (String) session.getAttribute("code");
-//        if (code1.equalsIgnoreCase(code)) {
-            //当验证码一致的时候，调用业务层
+        String code1 = (String) session.getAttribute("code");
+        if (code1.equalsIgnoreCase(code)) {
             result = loginService.regist(username, password, role == 1);
-//        } else {
-//            result = new Result();
-//            result.setMessage("验证码错误").setStatus(false);
-//        }
+        } else {
+            result = new Result();
+            result.setMessage("验证码错误").setStatus(false);
+        }
 
         return result;
     }
 
 
-    //定义一个请求用来接受登录操作
+    /**
+     * 登陆请求处理
+     *
+     * @param session
+     * @param code     验证码
+     * @param username 用户名
+     * @param password 密码
+     * @return {code：0，msg：错误原因}
+     * 0为成功  1为用户名密码错误 2为验证码错误
+     */
     @RequestMapping("login")
     @ResponseBody
     public String login(HttpSession session, String code, String username, String password) {
-        ObjectMapper objectMapper=new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode objectNode = objectMapper.createObjectNode();
         String code1 = (String) session.getAttribute("code");
 
         if (code1.equalsIgnoreCase(code)) {
             int role = loginService.login(username, password);
-            if(role>0){
+            if (role > 0) {
                 Login object = new Login();
                 object.setAccount_name(username);
                 object.setAccount_password(password);
                 if(role>1){
                     object.setRole(true);
                 }
-                session.setAttribute("user",object);
-                objectNode.put("code",1);
+                session.setAttribute("user", object);
+                objectNode.put("code", 0);
                 objectNode.put("message","登陆成功");
             }else {
-                objectNode.put("code",0);
-                objectNode.put("message","用户名或密码输入错误");
+                objectNode.put("code", 1);
+                objectNode.put("message", "用户名或密码输入错误");
             }
 
         } else {
-        objectNode.put("code",0);
-        objectNode.put("message","验证码错误");
+            objectNode.put("code", 2);
+            objectNode.put("message", "验证码错误");
         }
         return objectNode.toString();
     }
 
 
-    //用户退出功能
+    /**
+     * 用户清除用户数据 退出
+     *
+     * @param session
+     * @return 无意义
+     */
     @RequestMapping("back")
     @ResponseBody
     public String back(HttpSession session) {
@@ -113,11 +130,19 @@ public class UserController {
         return "yes,sir";
     }
 
+    /**
+     * 返回用户数据的数据列表
+     *
+     * @param page  页码
+     * @param limit 页面容量
+     * @return {code：0，msg：错误原因，data：object}
+     * 0为成功查询到
+     */
     //@check(need = PermEnum.admin)
     @RequestMapping("list")
     @ResponseBody
     public String getuser(Integer page, Integer limit) {
-        Page<loginShow> Paging=loginService.findByPaging(page,limit);
+        Page<loginShow> Paging = loginService.findByPaging(page, limit);
 
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode root = mapper.createObjectNode();
