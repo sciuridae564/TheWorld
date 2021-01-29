@@ -1,7 +1,9 @@
 package cn.sciuridae.service;
 
 import cn.sciuridae.bean.City;
+import cn.sciuridae.bean.Class;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.pagehelper.Page;
 
 /**
  * <p>
@@ -13,4 +15,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface CityService extends IService<City> {
 
+    int addCity(String cityName);
+    Page<City> findByCity(int current, int limit);
 }

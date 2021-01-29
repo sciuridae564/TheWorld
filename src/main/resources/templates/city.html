@@ -11,6 +11,8 @@
 <div>
     <table id="demo"></table>
 </div>
+<button style="height: 50px ;width: 150px" type="button" onclick="f()"></button>
+
 
 <script type="text/javascript">
     layui.use('table', function () {
@@ -24,16 +26,33 @@
             , page: true //开启分页
             , cols: [
                 [ //表头
-                    {field: 'id', title: 'ID', width: 80, sort: true, fixed: 'left'}
-                    , {field: 'city_name', title: '用户名', width: 80}
-                    , {field: 'city_time', title: '性别', width: 80, sort: true}
-                    , {field: 'city_count', title: '城市', width: 80}
+                    , {field: 'city_name', title: '城市名', }
+                    , {field: 'city_time', title: '创建时间',  sort: true}
+                    , {field: 'city_count', title: '数量',  }
                 ]
             ]
         });
 
     });
+    function f() {
+        $.post({ url: "/city/save?" +
+                "city_name="+GetRandomNum(0,558885) ,
+            context: JSON,
+            success: function(json){
+                console.log(json)
+            },
+            error :function () {
+                console.log(json)
+            }});
 
+    }
+
+
+    function GetRandomNum(Min, Max) {
+        var Range = Max - Min;
+        var Rand = Math.random();
+        return(Min + Math.round(Rand * Range));
+    }
 </script>
 </body>
 </html>

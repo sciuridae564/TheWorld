@@ -1,7 +1,9 @@
 package cn.sciuridae.dao;
 
 import cn.sciuridae.bean.City;
+import cn.sciuridae.bean.Class;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -28,4 +30,6 @@ public interface CityMapper extends BaseMapper<City> {
     @Select("select id from city where city_name = #{name}")
     Integer getCityid(@Param("name")String name);
 
+    @Select("select city_name,city_time ,city_count from city ")
+    Page<City> getCity();
 }

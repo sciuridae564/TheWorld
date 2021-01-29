@@ -112,9 +112,8 @@ public class UserController {
     }
 
     @RequestMapping("list")
+    @ResponseBody
     public String getuser(Integer page, Integer limit) {
-
-
         Page<loginShow> Paging=loginService.findByPaging(page,limit);
 
         ObjectMapper mapper = new ObjectMapper();
