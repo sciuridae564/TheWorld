@@ -1,10 +1,9 @@
 package cn.sciuridae.service;
 
-import cn.sciuridae.bean.Result;
 import cn.sciuridae.bean.Team;
+import cn.sciuridae.bean.show.teamShow;
 import com.baomidou.mybatisplus.extension.service.IService;
-
-import java.util.List;
+import com.github.pagehelper.Page;
 
 /**
  * <p>
@@ -15,10 +14,12 @@ import java.util.List;
  * @since 2021-01-28
  */
 public interface TeamService extends IService<Team> {
-    List<Team> getTeamsByClassId(String class_id);
-
-    Result saveTeamData(Team team);
-
-    List<Team> getTeams(int col, int size);
-
+    Page<teamShow> findByPaging(int current, int limit);
+    int dele(Long teamId);
+    int add(Long teamId, String team_name,
+            Long team_class_id, String team_nick,
+            String team_slo, Long team_leader_id);
+    int Change(Long teamid, String team_name,
+               Long team_class_id, String team_nick,
+               String team_slo, Long team_leader_id);
 }

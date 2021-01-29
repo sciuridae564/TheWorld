@@ -38,7 +38,7 @@ public class StudentController {
     /**
      * 查询学生数据
      */
-    @GetMapping("findAll")
+    @GetMapping("findAlldata")
     @ResponseBody
     public ObjectNode findAll(Integer page, Integer limit, String searchValue, String SearchType) {
         Page<studentShow> Paging;

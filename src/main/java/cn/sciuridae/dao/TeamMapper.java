@@ -1,7 +1,9 @@
 package cn.sciuridae.dao;
 
 import cn.sciuridae.bean.Team;
+import cn.sciuridae.bean.show.teamShow;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -40,4 +42,10 @@ public interface TeamMapper extends BaseMapper<Team> {
             "from team " +
             "where team_name=#{team_name}"})
     Integer getTeamIDByTeamName(@Param("team_name") String team_name);
+
+    @Select("SELECT  te.team_id ,te.team_name ,cl.`class_name` AS team_class,te.`team_nick`,te.`team_slo`,st.`student_name` AS team_leader\n" +
+            "FROM team te  \n" +
+            "LEFT  JOIN class cl ON te.team_class_id=cl.`id` \n" +
+            "LEFT  JOIN student st ON st.`id`=te.`team_leader_id`  \n" )
+    Page<teamShow> getShow();
 }

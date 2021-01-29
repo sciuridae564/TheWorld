@@ -26,4 +26,6 @@ public interface ClassMapper extends BaseMapper<Class> {
     @Select({"SELECT class_id ,class_name " +
             "FROM class"})
     Page<Class> getclass();
+    @Select({"SELECT id FROM class where class_id= #{class}"})
+    Integer getclassId(@Param("class")Long clazz);
 }
