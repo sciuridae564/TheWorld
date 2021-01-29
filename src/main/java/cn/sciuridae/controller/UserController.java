@@ -1,5 +1,7 @@
 package cn.sciuridae.controller;
 
+import cn.sciuridae.aop.Enum.PermEnum;
+import cn.sciuridae.aop.anno.check;
 import cn.sciuridae.bean.Login;
 import cn.sciuridae.bean.Result;
 import cn.sciuridae.bean.searchType;
@@ -111,6 +113,7 @@ public class UserController {
         return "yes,sir";
     }
 
+    //@check(need = PermEnum.admin)
     @RequestMapping("list")
     @ResponseBody
     public String getuser(Integer page, Integer limit) {

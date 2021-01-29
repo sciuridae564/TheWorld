@@ -1,4 +1,4 @@
-package cn.sciuridae.configuration;
+package cn.sciuridae.Component;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -21,6 +21,7 @@ public class WebMvcConfig
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/").setViewName("/login");
         registry.addViewController("/student").setViewName("/student");
         registry.addViewController("/city").setViewName("/city");
         registry.addViewController("/class").setViewName("/class");
@@ -32,7 +33,9 @@ public class WebMvcConfig
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-
+        registry.addInterceptor(new LoginHandlerInterceptor())
+                .addPathPatterns("/**")
+                .excludePathPatterns("/login.html", "/user/getImage","/user/regist","/", "/user/login", "/user/check", "/css/*", "/fonts/*", "/image/*", "/js/*", "/layui/*");
     }
 
 }
