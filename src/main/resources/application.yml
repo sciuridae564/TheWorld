@@ -1,0 +1,20 @@
+server:
+  port: 8080
+spring:
+  thymeleaf:
+    cache: false
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/boki?useSSL=false&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&serverTimezone=Asia/Shanghai
+    username: root
+    password: xxxxx
+    type: com.alibaba.druid.pool.DruidDataSource
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: false
+# pagehelper
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql

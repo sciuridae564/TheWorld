@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/js/jquery-3.3.1.js"></script>
+    <link href="/layui/css/layui.css" media="all" rel="stylesheet">
+    <script src="/layui/layui.js"></script>
+</head>
+<body>
+<table id="demo"></table>
+
+
+<script type="text/javascript">
+    layui.use('table', function () {
+        var table = layui.table;
+
+        table.render({
+            elem: '#demo'
+            , height: 400
+            , url: '/student/findAll' //数据接口
+            , page: true //开启分页
+            , cols: [
+                [ //表头
+                    {field: 'student_id', title: '用户名', sort: true, fixed: 'left'}
+                    , {field: 'student_name', title: '名字'}
+                    , {field: 'student_sex', title: '性别', width: 80}
+                    , {field: 'student_bir', title: '生日'}
+                    , {field: 'student_class', title: '班级'}
+                    , {field: 'student_team', title: '小组'}
+                    , {field: 'qq_number', title: 'qq号'}
+                    , {field: 'work_city', title: '城市'}
+                ]
+            ]
+        });
+
+    });
+
+</script>
+</body>
+</html>

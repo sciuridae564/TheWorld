@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/js/jquery-3.3.1.js"></script>
+    <link href="/layui/css/layui.css" media="all" rel="stylesheet">
+    <script src="/layui/layui.js"></script>
+</head>
+<body>
+<div>
+    <table id="demo"></table>
+</div>
+
+<script type="text/javascript">
+    layui.use('table', function () {
+        var table = layui.table;
+
+        //第一个实例
+        table.render({
+            elem: '#demo'
+            , height: 312
+            , url: '/city/findAlldata' //数据接口
+            , page: true //开启分页
+            , cols: [
+                [ //表头
+                    {field: 'id', title: 'ID', width: 80, sort: true, fixed: 'left'}
+                    , {field: 'city_name', title: '用户名', width: 80}
+                    , {field: 'city_time', title: '性别', width: 80, sort: true}
+                    , {field: 'city_count', title: '城市', width: 80}
+                ]
+            ]
+        });
+
+    });
+
+</script>
+</body>
+</html>
