@@ -1,12 +1,10 @@
 package test;
 
 import cn.sciuridae.MySpringApplication;
-import cn.sciuridae.bean.show.studentShow;
 import cn.sciuridae.dao.ClassMapper;
 import cn.sciuridae.service.StudentService;
 import cn.sciuridae.service.TagsService;
 import cn.sciuridae.service.TeamService;
-import com.github.pagehelper.Page;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +44,7 @@ public class databaseTest {
 //        student.setStudent_name("test");
 //        student.setStudent_id(1122554454L);
 
-        int aaa = classMapper.getClassid("aaa");
+        Integer aaa = classMapper.getClassid("aaa");
         System.out.println(aaa);
     }
 }

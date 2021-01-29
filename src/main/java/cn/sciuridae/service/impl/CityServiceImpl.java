@@ -1,7 +1,6 @@
 package cn.sciuridae.service.impl;
 
 import cn.sciuridae.bean.City;
-import cn.sciuridae.bean.Class;
 import cn.sciuridae.dao.CityMapper;
 import cn.sciuridae.service.CityService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -25,22 +24,29 @@ public class CityServiceImpl extends ServiceImpl<CityMapper, City> implements Ci
 
     @Autowired
     private CityMapper cityMapper;
+
+
     @Override
-    public int addCity(String cityName) {
+    public Integer addCity(String cityName) {
         Integer cityid = cityMapper.getCityid(cityName);
-        if(cityid!=null){
+        if (cityid != null) {
             return -1;
         }
         try {
-            City city=new City();
+            City city = new City();
             city.setCity_time(LocalDateTime.now());
             city.setCity_name(cityName);
             cityMapper.insert(city);
-        }catch (Exception e){
+        } catch (Exception e) {
             return -2;
         }
 
         return 0;
+    }
+
+    @Override
+    public Integer getCityId(String cityName) {
+        return cityMapper.getCityid(cityName);
     }
 
     @Override

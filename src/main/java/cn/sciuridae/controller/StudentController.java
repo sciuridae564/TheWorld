@@ -4,10 +4,13 @@ import cn.sciuridae.bean.Student;
 import cn.sciuridae.bean.Tags_to_student;
 import cn.sciuridae.bean.searchType;
 import cn.sciuridae.bean.show.studentShow;
+import cn.sciuridae.controller.bean.JsonData;
+import cn.sciuridae.service.CityService;
 import cn.sciuridae.service.StudentService;
 import cn.sciuridae.service.TagsService;
 import cn.sciuridae.service.Tags_to_studentService;
 import cn.sciuridae.utils.JsonUtils;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 @Controller
 @RequestMapping("/student")
@@ -32,6 +36,8 @@ public class StudentController {
     private Tags_to_studentService tags_to_studentService;
     @Autowired
     private TagsService tagsService;
+    @Autowired
+    private CityService cityService;
 
     /**
      * 查询学生数据，可以根据传入的搜索条件进一步搜索
@@ -77,36 +83,64 @@ public class StudentController {
      * @param student_sex   性别   如 女
      * @param student_bir   生日  如 2020-02-15 必须符合 yyyy-MM-dd
      * @param student_class 班级名如 烤鸭班 必须已存在
-     * @param student_team  团队名如 烤鸭队  必须已存在
+     * @param student_team  团队名如 烤鸭队
      * @param qq_number     qq号码  如 54555155
-     * @param work_city     工作城市 如  北京   必须已存在
-     * @param tags          标签数组      如 [篮球，乒乓球]必须已存在
-     * @return 插入成功与否
+     * @param work_city     工作城市 如  北京    城市必须已存在
+     * @param tags          标签数组      如 [篮球，乒乓球]标签必须已存在
+     * @return 插入成功与否json 0成功 {code:0,msg:,data}
      */
     @RequestMapping("save")
     @ResponseBody
-    public boolean save(Long student_id,
-                        String student_name,
-                        String student_sex,
-                        String student_bir,
-                        String student_class,
-                        String student_team,
-                        Long qq_number,
-                        String work_city,
-                        String[] tags) {
-
-        //插入student
+    public String save(Long student_id,
+                       String student_name,
+                       String student_sex,
+                       String student_bir,
+                       String student_class,
+                       String student_team,
+                       Long qq_number,
+                       String work_city,
+                       String[] tags) {
+        JsonData jsonData = new JsonData();
+        //student构造
         studentShow student = new studentShow();
-        student.setWork_city(work_city);
 
+        //插入城市数据
+        if (work_city != null) {
+            Integer cityId = cityService.getCityId(work_city);
+            //如果城市存在则插入
+            if (cityId != null) {
+                student.setWork_city(work_city);
+            }
+        }
 
-        DateTimeFormatter dTF = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate localDate=LocalDate.parse(student_bir,dTF);
-        LocalDateTime localDateTime=localDate.atTime(0,0);
-        student.setStudent_bir(localDateTime);
+        //生日插入
+        if (student_bir != null) {
+            try {
+                DateTimeFormatter dTF = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                LocalDate localDate = LocalDate.parse(student_bir, dTF);
+                LocalDateTime localDateTime = localDate.atTime(0, 0);
+                student.setStudent_bir(localDateTime);
+            } catch (DateTimeParseException e) {
+                jsonData.setCode(-1);
+                jsonData.setMsg("生日格式错误，正确格式为2012-05-12");
+                try {
+                    return JsonUtils.objectToJsonString(jsonData);
+                } catch (JsonParseException jsonParseException) {
+                }
+            }
+        }
 
+        if (student_sex != null) {
+            student.setStudent_sex(student_sex);
+        } else {
+            jsonData.setCode(-2);
+            jsonData.setMsg("人物必须有性别");
+            try {
+                return JsonUtils.objectToJsonString(jsonData);
+            } catch (JsonParseException jsonParseException) {
+            }
+        }
 
-        student.setStudent_sex(student_sex);
         student.setQq_number(qq_number);
         student.setStudent_team(student_team);
         student.setStudent_class(student_class);
@@ -115,12 +149,17 @@ public class StudentController {
 
         Student student1 = studentService.addStudent(student);
         if (student1 == null) {
-            return false;
+            jsonData.setCode(-1);
+            jsonData.setMsg("插入失败");
+            try {
+                return JsonUtils.objectToJsonString(jsonData);
+            } catch (JsonParseException jsonParseException) {
+            }
         }
 
 
         //插入标签关系
-        if(tags!=null){
+        if (tags != null) {
             Tags_to_student tags_to_student;
             for (String s : tags) {
                 tags_to_student = new Tags_to_student();
@@ -130,7 +169,15 @@ public class StudentController {
             }
         }
 
-        return true;
+
+        jsonData.setCode(0);
+        jsonData.setMsg("成功插入");
+        jsonData.setData(student);
+        try {
+            return JsonUtils.objectToJsonString(jsonData);
+        } catch (JsonParseException jsonParseException) {
+        }
+        return null;
     }
 
     /**
@@ -152,10 +199,10 @@ public class StudentController {
      * @param student_name  学生姓名 可为空
      * @param student_sex   学生性别 可为空
      * @param student_bir   学生生日  可为空
-     * @param student_class 学生班级名字
-     * @param student_team  学生小组名字
-     * @param qq_number     学生qq号
-     * @param work_city     学生工作城市名字
+     * @param student_class 学生班级名字 可为空
+     * @param student_team  学生小组名字 可为空
+     * @param qq_number     学生qq号 可为空
+     * @param work_city     学生工作城市名字 可为空
      * @return {code：0，message ：object}
      * 如果成功则coded为0，不成功则为1，且message携带旧的学生数据
      */
